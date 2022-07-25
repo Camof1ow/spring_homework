@@ -2,9 +2,10 @@ package com.example.homework.controller;
 
 import com.example.homework.domain.Post;
 import com.example.homework.domain.PostRepository;
-import com.example.homework.domain.check.PassCheckDto;
+import com.example.homework.domain.requests.PassRequestDto;
 import com.example.homework.domain.requests.PostRequestDto;
 
+import com.example.homework.domain.response.PassResponseDto;
 import com.example.homework.domain.response.PostResponseDto;
 import com.example.homework.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -42,12 +43,11 @@ public class PostController {
     }
 
     @PostMapping("/api/posts/{id}")
-    public PassCheckDto checkPass (@RequestBody PostRequestDto requestDto, @PathVariable Long id){
+    public PassResponseDto checkPass (@RequestBody String password, @PathVariable Long id){
         Post post = postService.findOne(id);
         new PostResponseDto(post);
         String pass1 = post.getPassword();
-        String pass2 = Post.toEntity(requestDto).getPassword();
-        return Objects.equals(pass1, pass2) ? new PassCheckDto("true") : new PassCheckDto("false");
+        return Objects.equals(pass1, password) ? new PassResponseDto(true) : new PassResponseDto(false);
     }
 
 
