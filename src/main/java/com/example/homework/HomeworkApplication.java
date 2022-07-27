@@ -1,7 +1,5 @@
 package com.example.homework;
 
-
-import com.example.homework.domain.Post;
 import com.example.homework.domain.PostRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -25,10 +23,4 @@ public class HomeworkApplication {
             };
         }
     }
-
-
-
-
-
-
 
