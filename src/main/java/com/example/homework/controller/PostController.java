@@ -1,12 +1,12 @@
 package com.example.homework.controller;
 
+import com.example.homework.ResEntity;
 import com.example.homework.domain.Post;
 import com.example.homework.domain.PostRepository;
 import com.example.homework.domain.requests.PassRequestDto;
 import com.example.homework.domain.requests.PostRequestDto;
 
-import com.example.homework.domain.response.PassResponseDto;
-import com.example.homework.domain.response.PostResponseDto;
+import com.example.homework.domain.response.*;
 import com.example.homework.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.example.homework.ResEntity.StatusEnum.OK;
 
 @RequiredArgsConstructor
 @RestController //Json
@@ -25,46 +27,43 @@ public class PostController {
 
     // PostMapping을 통해서, 같은 주소라도 방식이 다름을 구분합니다.
 
+
+
     @GetMapping("/api/posts")
-    public List<Post> list(){
-        return postRepository.findAll(Sort.by(Sort.Direction.DESC, "date"));
+    public ResEntity findById() {
+        List<Post> pos = postRepository.findAll(Sort.by(Sort.Direction.DESC, "date"));
+        return new ResEntity(pos,OK);
     }
+
 
     @PostMapping("/api/posts")
-    public Post create(@RequestBody PostRequestDto dto){
-        return postRepository.save(Post.toEntity(dto));
+    public ResEntity create(@RequestBody PostRequestDto dto){
+        Post post = postRepository.save(Post.toEntity(dto));
+        return new ResEntity(post,OK);
     }
 
-
     @GetMapping("/api/posts/{id}")
-    public PostResponseDto findOne(@PathVariable Long id){
+    public ResEntity findOne(@PathVariable Long id){
         Post post = postService.findOne(id);
-        return new PostResponseDto(post);
+        return new ResEntity(post,OK);
     }
 
     @PostMapping("/api/posts/{id}")
-    public PassResponseDto checkPass (@RequestBody String password, @PathVariable Long id){
+    public ResEntity checkPass (@RequestBody PassRequestDto password, @PathVariable Long id){
+        String pass =  password.getPassword();// 바디에 입력한값 가져오기
         Post post = postService.findOne(id);
-        new PostResponseDto(post);
         String pass1 = post.getPassword();
-        return Objects.equals(pass1, password) ? new PassResponseDto(true) : new PassResponseDto(false);
+        Objects.equals(pass, pass1);
+        return new ResEntity(Objects.equals(pass, pass1),OK);
     }
-
-
-
-
     @PutMapping("/api/posts/{id}")
-    public Long updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
-        return postService.update(id, requestDto);
+    public ResEntity updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
+
+        return new ResEntity(postService.update(id, requestDto),OK);
     }
-
-
-
     @DeleteMapping("/api/posts/{id}")
-    public Long deletePost(@PathVariable Long id) {
+    public ResEntity deletePost(@PathVariable Long id) {
         postRepository.deleteById(id);
-        return id;
+        return new ResEntity(true,OK);
     }
-
-
 }

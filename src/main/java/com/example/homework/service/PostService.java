@@ -20,22 +20,16 @@ public class PostService {
 
 
     @Transactional
-    public Long update(Long id, PostRequestDto requestDto) {
+    public Post update(Long id, PostRequestDto requestDto) {
         Post post1 = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
         );
         post1.update(requestDto);
-        return post1.getId();
+
+
+        return post1;
     }
 
-    @Transactional
-    public Long delete(Long id, PostRequestDto requestDto) {
-        Post post1 = postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
-        );
-        post1.delete(requestDto);
-        return post1.getId();
-    }
 
     public Post findOne(Long id) {
         return postRepository.findById(id)

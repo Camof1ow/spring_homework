@@ -16,11 +16,14 @@ public class PassRequestDto {
     @Column(nullable = false)
     private boolean check;
 
+    @Column(nullable = false)
+    private String password;
 
-    public PassRequestDto(boolean check) {
-        this.check = check;
+
+    public PassRequestDto(String password) {
+        this.password=password;
+        System.out.println(password);
     }
-
 
 
 }
