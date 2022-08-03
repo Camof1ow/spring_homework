@@ -1,4 +1,4 @@
-package com.example.homework.domain;
+package com.example.homework.model;
 
 import com.example.homework.dto.PostRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;

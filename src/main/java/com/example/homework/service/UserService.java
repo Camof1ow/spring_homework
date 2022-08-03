@@ -22,17 +22,23 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void registerUser(SignupRequestDto requestDto) {
+    public User registerUser(SignupRequestDto requestDto) {
         // 회원 ID 중복 확인
-        String username = requestDto.getUsername();
-        Optional<User> found = userRepository.findByUsername(username);
+        String nickname = requestDto.getNickname();
+        Optional<User> found = userRepository.findByUsername(nickname);
         if (found.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자 ID 가 존재합니다.");
         }
 
+
         // 패스워드 암호화
+        String passwordConfirm = requestDto.getPasswordConfirm();
+        String pass = requestDto.getPassword();
+        if (!pass.equals(passwordConfirm)){
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
         String password = passwordEncoder.encode(requestDto.getPassword());
-        String email = requestDto.getEmail();
+
 
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
@@ -43,7 +49,8 @@ public class UserService {
             role = UserRoleEnum.ADMIN;
         }
 
-        User user = new User(username, password, email, role);
+        User user = new User(nickname,password,passwordConfirm, role);
         userRepository.save(user);
+        return user;
     }
 }

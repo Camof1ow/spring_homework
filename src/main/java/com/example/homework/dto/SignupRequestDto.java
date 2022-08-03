@@ -6,9 +6,10 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SignupRequestDto {
-    private String username;
+    private String nickname;
     private String password;
-    private String email;
+    private String passwordConfirm;
     private boolean admin = false;
     private String adminToken = "";
+
 }

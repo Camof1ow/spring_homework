@@ -1,17 +1,22 @@
 package com.example.homework.model;
 
+import com.example.homework.dto.SignupRequestDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 
+@Component
 @Setter
 @Getter // get 함수를 일괄적으로 만들어줍니다.
 @NoArgsConstructor // 기본 생성자를 만들어줍니다.
 @Entity // DB 테이블 역할을 합니다.
 @Table(name = "users")
-public class User {
+public class User extends Timestamped {
 
     // ID가 자동으로 생성 및 증가합니다.
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,23 +28,36 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(nullable = false)
+    @JsonIgnore
+    private String passwordConfirm;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
+    @JsonIgnore
     private UserRoleEnum role;
 
 
-    public User(String username, String password, String email, UserRoleEnum role) {
+    @Builder
+    public User(String username, String password,String passwordConfirm, UserRoleEnum role) {
         this.username = username;
         this.password = password;
-        this.email = email;
+        this.passwordConfirm = passwordConfirm;
         this.role = role;
 
+    }
+
+    public static User toEntity(SignupRequestDto dto, UserRoleEnum role){
+        return User.builder()
+                .role(role)
+                .username(dto.getNickname())
+                .password(dto.getPassword())
+                .passwordConfirm(dto.getPasswordConfirm())
+                .build();
     }
 
 }

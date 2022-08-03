@@ -11,12 +11,14 @@ import lombok.Setter;
 @Setter
 public class ResEntity {
 
+
     private StatusEnum status;
     private Object data;
 
     public ResEntity(Object data,StatusEnum status) {
         this.status = status;
         this.data = data;
+
     }
 
     public enum StatusEnum {
@@ -29,7 +31,7 @@ public class ResEntity {
         final int statusCode;
         final String code;
 
-        StatusEnum(int statusCode, String code) {
+        StatusEnum(Integer statusCode, String code) {
             this.statusCode = statusCode;
             this.code = code;
         }

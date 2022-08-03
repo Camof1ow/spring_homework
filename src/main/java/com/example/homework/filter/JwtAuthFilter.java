@@ -19,6 +19,7 @@ import java.io.IOException;
  * Token 을 내려주는 Filter 가 아닌  client 에서 받아지는 Token 을 서버 사이드에서 검증하는 클레스 SecurityContextHolder 보관소에 해당
  * Token 값의 인증 상태를 보관 하고 필요할때 마다 인증 확인 후 권한 상태 확인 하는 기능
  */
+
 public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
 
     private final HeaderTokenExtractor extractor;
@@ -40,8 +41,14 @@ public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
 
         // JWT 값을 담아주는 변수 TokenPayload
         String tokenPayload = request.getHeader("Authorization");
+        String tokenPayload1 = request.getHeader("Refresh-token");
         if (tokenPayload == null) {
-            response.sendRedirect("/user/loginView");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"로그인이 필요합니다");
+            return null;
+        }
+
+        if (tokenPayload1 == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"로그인이 필요합니다");
             return null;
         }
 
@@ -51,6 +58,8 @@ public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
         return super
                 .getAuthenticationManager()
                 .authenticate(jwtToken);
+
+
     }
 
     @Override

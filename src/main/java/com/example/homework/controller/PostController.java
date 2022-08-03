@@ -1,16 +1,19 @@
 package com.example.homework.controller;
 
 import com.example.homework.ResEntity;
-import com.example.homework.domain.Post;
-import com.example.homework.domain.PostRepository;
 import com.example.homework.dto.PassRequestDto;
 import com.example.homework.dto.PostRequestDto;
-
+import com.example.homework.jwt.HeaderTokenExtractor;
+import com.example.homework.model.Post;
+import com.example.homework.repository.PostRepository;
 import com.example.homework.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,27 +27,35 @@ public class PostController {
 
     private final PostService postService;
 
+    private final HeaderTokenExtractor headerTokenExtractor;
+
+    private final HttpServletRequest httpServletRequest;
+
+
     // PostMapping을 통해서, 같은 주소라도 방식이 다름을 구분합니다.
 
 
 
+
+
     @GetMapping("/api/posts")
-    public ResEntity findById() {
+    public ResponseEntity<List<Post>> findById() {
         List<Post> pos = postRepository.findAll(Sort.by(Sort.Direction.DESC, "date"));
-        return new ResEntity(pos,OK);
+        return ResponseEntity.status(HttpStatus.OK).body(pos);
     }
 
 
-    @PostMapping("/api/posts")
+    @PostMapping("/api/auth/posts")
     public ResEntity create(@RequestBody PostRequestDto dto){
+
         Post post = postRepository.save(Post.toEntity(dto));
         return new ResEntity(post,OK);
     }
 
     @GetMapping("/api/posts/{id}")
-    public ResEntity findOne(@PathVariable Long id){
+    public ResponseEntity<?> findOne(@PathVariable Long id){
         Post post = postService.findOne(id);
-        return new ResEntity(post,OK);
+        return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
     @PostMapping("/api/posts/{id}")
@@ -64,5 +75,9 @@ public class PostController {
     public ResEntity deletePost(@PathVariable Long id) {
         postRepository.deleteById(id);
         return new ResEntity(true,OK);
+    }
+
+    public HeaderTokenExtractor getHeaderTokenExtractor() {
+        return headerTokenExtractor;
     }
 }

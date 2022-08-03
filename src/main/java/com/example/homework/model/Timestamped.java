@@ -1,7 +1,9 @@
-package com.example.homework.domain;
+package com.example.homework.model;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.EntityListeners;
@@ -16,5 +18,10 @@ import java.time.LocalDateTime;
 public abstract class Timestamped {
 
     @CreatedDate // 생성일자임을 나타냅니다.
-    public LocalDateTime date;
+    public LocalDateTime createdAt;
+
+    @LastModifiedDate // 생성일자임을 나타냅니다.
+    public LocalDateTime modifiedAt;
+
+
 }

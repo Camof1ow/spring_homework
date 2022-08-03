@@ -1,6 +1,6 @@
 package com.example.homework.dto;
 
-import com.example.homework.domain.Post;
+import com.example.homework.model.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,22 +17,17 @@ public class PostRequestDto {
     private String title;
     @Column(nullable = false)
     private String content;
-    @Column(nullable = false)
-    private String author;
-    @Column(nullable = false)
-    private String password;
 
-    public PostRequestDto(String title, String author, String content,String password) {
-        this.author=author;
+
+    public PostRequestDto(String title, String content) {
         this.title=title;
         this.content=content;
-        this.password=password;
 
 
     }
 
     public PostRequestDto(Post post) {
-        this(post.getPassword(), post.getTitle(), post.getAuthor(), post.getContent());
+        this(post.getTitle(), post.getContent());
     }
 
 
