@@ -1,4 +1,4 @@
-package com.example.homework.domain.response;
+package com.example.homework.dto;
 
 
 import com.example.homework.domain.Post;

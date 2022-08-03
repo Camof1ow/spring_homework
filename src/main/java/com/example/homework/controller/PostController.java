@@ -3,10 +3,9 @@ package com.example.homework.controller;
 import com.example.homework.ResEntity;
 import com.example.homework.domain.Post;
 import com.example.homework.domain.PostRepository;
-import com.example.homework.domain.requests.PassRequestDto;
-import com.example.homework.domain.requests.PostRequestDto;
+import com.example.homework.dto.PassRequestDto;
+import com.example.homework.dto.PostRequestDto;
 
-import com.example.homework.domain.response.*;
 import com.example.homework.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;

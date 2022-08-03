@@ -1,6 +1,6 @@
 package com.example.homework.domain;
 
-import com.example.homework.domain.requests.PostRequestDto;
+import com.example.homework.dto.PostRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;

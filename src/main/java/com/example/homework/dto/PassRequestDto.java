@@ -1,4 +1,4 @@
-package com.example.homework.domain.requests;
+package com.example.homework.dto;
 
 
 import lombok.Getter;

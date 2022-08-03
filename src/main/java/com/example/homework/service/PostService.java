@@ -3,7 +3,7 @@ package com.example.homework.service;
 import com.example.homework.domain.PostRepository;
 import com.example.homework.domain.Post;
 
-import com.example.homework.domain.requests.PostRequestDto;
+import com.example.homework.dto.PostRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
