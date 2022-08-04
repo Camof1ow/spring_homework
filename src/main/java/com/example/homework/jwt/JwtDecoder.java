@@ -20,7 +20,17 @@ public class JwtDecoder {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+
+
     public String decodeUsername(String token) {
+
+        String result = JWT.require(Algorithm.HMAC256(JWT_SECRET.getBytes()))
+                .build()
+                .verify(token)
+                .getSubject();
+
+
+
         DecodedJWT decodedJWT = isValidToken(token)
                 .orElseThrow(() -> new IllegalArgumentException("유효한 토큰이 아닙니다."));
 
@@ -33,11 +43,9 @@ public class JwtDecoder {
             throw new IllegalArgumentException("유효한 토큰이 아닙니다.");
         }
 
-        String username = decodedJWT
+        return decodedJWT
                 .getClaim(CLAIM_USER_NAME)
                 .asString();
-
-        return username;
     }
 
     private Optional<DecodedJWT> isValidToken(String token) {

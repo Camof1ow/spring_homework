@@ -18,10 +18,10 @@ import javax.persistence.*;
 @Table(name = "users")
 public class User extends Timestamped {
 
+    @Id
     // ID가 자동으로 생성 및 증가합니다.
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Id
-    private Long id;
+    private Long userId;
 
     // nullable: null 허용 여부
     // unique: 중복 허용 여부 (false 일때 중복 허용)
@@ -54,7 +54,7 @@ public class User extends Timestamped {
     public static User toEntity(SignupRequestDto dto, UserRoleEnum role){
         return User.builder()
                 .role(role)
-                .username(dto.getNickname())
+                .username(dto.getUsername())
                 .password(dto.getPassword())
                 .passwordConfirm(dto.getPasswordConfirm())
                 .build();

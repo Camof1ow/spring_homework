@@ -41,13 +41,8 @@ public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
 
         // JWT 값을 담아주는 변수 TokenPayload
         String tokenPayload = request.getHeader("Authorization");
-        String tokenPayload1 = request.getHeader("Refresh-token");
-        if (tokenPayload == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"로그인이 필요합니다");
-            return null;
-        }
 
-        if (tokenPayload1 == null) {
+        if (tokenPayload == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST,"로그인이 필요합니다");
             return null;
         }

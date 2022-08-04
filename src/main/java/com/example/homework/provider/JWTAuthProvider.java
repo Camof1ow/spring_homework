@@ -24,6 +24,7 @@ public class JWTAuthProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
+
         String token = (String) authentication.getPrincipal();
         String username = jwtDecoder.decodeUsername(token);
 
@@ -34,7 +35,7 @@ public class JWTAuthProvider implements AuthenticationProvider {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Can't find " + username));;
         UserDetailsImpl userDetails = new UserDetailsImpl(user);
-        System.out.println("aaaaaaa");
+
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 

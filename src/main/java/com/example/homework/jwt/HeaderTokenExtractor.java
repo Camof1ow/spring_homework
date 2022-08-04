@@ -25,15 +25,14 @@ public class HeaderTokenExtractor {
             throw new NoSuchElementException("올바른 JWT 정보가 아닙니다.");
         }
 
-        System.out.println("dddddddd");
+
+        System.out.println(header.substring(HEADER_PREFIX.length()));
 
         /*
          * - Token 값이 존재하는 경우 -
          * (bearer ) 부분만 제거 후 token 값 반환
          */
-        return header.substring(
-                HEADER_PREFIX.length(),
-                header.length()
+        return header.substring(HEADER_PREFIX.length()
         );
     }
 }

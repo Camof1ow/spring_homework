@@ -7,6 +7,7 @@ import com.example.homework.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
@@ -22,9 +23,9 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User registerUser(SignupRequestDto requestDto) {
+    public User registerUser(@RequestBody SignupRequestDto requestDto) {
         // 회원 ID 중복 확인
-        String nickname = requestDto.getNickname();
+        String nickname = requestDto.getUsername();
         Optional<User> found = userRepository.findByUsername(nickname);
         if (found.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자 ID 가 존재합니다.");

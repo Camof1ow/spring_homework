@@ -1,9 +1,7 @@
 package com.example.homework;
 
-import com.example.homework.filter.FormLoginFilter;
 import com.example.homework.filter.JwtAuthFilter;
 import com.example.homework.jwt.HeaderTokenExtractor;
-import com.example.homework.provider.FormLoginAuthProvider;
 import com.example.homework.provider.JWTAuthProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,7 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder auth) {
         auth
-                .authenticationProvider(formLoginAuthProvider())
+
                 .authenticationProvider(jwtAuthProvider);
     }
 
@@ -55,6 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web
                 .ignoring()
                 .antMatchers("/h2-console/**")
+                .antMatchers("/api/posts/**")
                 .antMatchers("/api/users/**");
     }
 
@@ -74,7 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          * JwtFilter       : 서버에 접근시 JWT 확인 후 인증을 실시합니다.
          */
         http
-                .addFilterBefore(formLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeRequests()
@@ -92,24 +91,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedPage("/forbidden.html");
     }
 
-    @Bean
-    public FormLoginFilter formLoginFilter() throws Exception {
-        FormLoginFilter formLoginFilter = new FormLoginFilter(authenticationManager());
-        formLoginFilter.setFilterProcessesUrl("/user/login");
-        formLoginFilter.setAuthenticationSuccessHandler(formLoginSuccessHandler());
-        formLoginFilter.afterPropertiesSet();
-        return formLoginFilter;
-    }
-
-    @Bean
-    public FormLoginSuccessHandler formLoginSuccessHandler() {
-        return new FormLoginSuccessHandler();
-    }
-
-    @Bean
-    public FormLoginAuthProvider formLoginAuthProvider() {
-        return new FormLoginAuthProvider(encodePassword());
-    }
 
     private JwtAuthFilter jwtFilter() throws Exception {
         List<String> skipPathList = new ArrayList<>();
@@ -124,7 +105,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 회원 관리 API 허용
         skipPathList.add("GET,/user/**");
         skipPathList.add("POST,/user/signup");
-        skipPathList.add("GET,/api/posts");
+        skipPathList.add("GET,/api/posts/**");
         skipPathList.add("POST,/api/users/**");
 
 

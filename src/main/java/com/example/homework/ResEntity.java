@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 
 
 @Data
@@ -20,7 +21,6 @@ public class ResEntity {
         this.data = data;
 
     }
-
     public enum StatusEnum {
 
         OK(200, "OK"),

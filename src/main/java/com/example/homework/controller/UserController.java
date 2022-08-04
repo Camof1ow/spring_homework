@@ -1,6 +1,5 @@
 package com.example.homework.controller;
 
-import com.example.homework.FormLoginSuccessHandler;
 import com.example.homework.ResEntity;
 import com.example.homework.UserDetailsImpl;
 import com.example.homework.dto.LoginRequestDto;
@@ -13,14 +12,13 @@ import com.example.homework.repository.UserRepository;
 import com.example.homework.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-
-
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import static com.example.homework.FormLoginSuccessHandler.AUTH_HEADER;
@@ -41,7 +39,9 @@ public class UserController {
 
     private final JwtTokenUtils jwtTokenUtils;
 
-    private final FormLoginSuccessHandler formLoginSuccessHandler;
+    private Authentication authentication;
+
+    private static String username;
 
 
 
@@ -52,13 +52,13 @@ public class UserController {
 
     @Autowired
     public UserController(UserService userService, UserRepository userRepository,
-                          PasswordEncoder passwordEncoder, UserDetailsImpl userDetails, JwtTokenUtils jwtTokenUtils, FormLoginSuccessHandler formLoginSuccessHandler) {
+                          PasswordEncoder passwordEncoder, UserDetailsImpl userDetails, JwtTokenUtils jwtTokenUtils) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userDetails = userDetails;
         this.jwtTokenUtils = jwtTokenUtils;
-        this.formLoginSuccessHandler = formLoginSuccessHandler;
+
     }
 
     @PostMapping("/api/users/signup")
@@ -69,26 +69,18 @@ public class UserController {
     }
 
     @PostMapping("/api/users/login")
-    public ResEntity login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response,Authentication authentication) {
-        User user = userRepository.findByUsername(requestDto.getNickname())
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 nickname 입니다."));
+    public ResEntity login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
+        User user = userRepository.findByUsername(requestDto.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 username 입니다."));
 
         if (!passwordEncoder.matches(requestDto.getPassword(),user.getPassword())){
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
 
-        String accessToken = JwtTokenUtils.generateJwtToken(userDetails);
-        String refreshToken = JwtTokenUtils.generateRefreshToken(userDetails);
-        response.setHeader("Refresh-token",refreshToken);
-        response.addHeader(AUTH_HEADER, TOKEN_TYPE + " " + accessToken);
+        String accessToken = JwtTokenUtils.generateToken(requestDto);
+        response.addHeader(AUTH_HEADER, TOKEN_TYPE +" "+ accessToken);
 
-        Cookie cookie = new Cookie("Authorization",JwtTokenUtils.generateJwtToken(userDetails));
-        response.addCookie(cookie);
-
-
-
-        return new ResEntity(requestDto,OK);
-
+        return new ResEntity(user,OK);
     }
 
     // 회원 관련 정보 받기
@@ -102,4 +94,16 @@ public class UserController {
         return new UserInfoDto(username, isAdmin);
     }
 
+    public JwtTokenUtils getJwtTokenUtils() {
+        return jwtTokenUtils;
+    }
+
+    public UserDetailsImpl getUserDetails() {
+        return userDetails;
+    }
+
+    public String getUsername(){
+        return username;
+
+    }
 }
